@@ -1,10 +1,10 @@
-import { Plugin, Action, ActionExample, Handler, Validator } from '@ai16z/eliza';
+import { Plugin, Action, ActionExample, Handler, Validator } from "@ai16z/eliza";
 export interface SearchResult {
     title: string;
     url: string;
     snippet: string;
     score?: number;
-    source: 'tavily' | 'exa';
+    source: "tavily" | "exa";
     metadata?: Record<string, unknown>;
 }
 export interface SearchOptions {

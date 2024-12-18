@@ -21,6 +21,9 @@ importers:
         specifier: ^16.4.7
         version: 16.4.7
     devDependencies:
+      '@babel/parser':
+        specifier: ^7.26.3
+        version: 7.26.3
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
@@ -33,6 +36,12 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.21.0
         version: 6.21.0(eslint@8.57.1)(typescript@5.7.2)
+      acorn:
+        specifier: ^8.14.0
+        version: 8.14.0
+      acorn-walk:
+        specifier: ^8.3.4
+        version: 8.3.4
       eslint:
         specifier: ^8.57.1
         version: 8.57.1

@@ -9,8 +9,6 @@ import {
   type IDatabaseAdapter,
 } from "@ai16z/eliza";
 
-elizaLogger.setLevel('debug');
-
 import { loadCharacters } from "./loader";
 import { DirectClient } from "@ai16z/client-direct";
 

@@ -1,28 +1,33 @@
-import { Content } from '@ai16z/eliza';
-import { SearchPluginConfig, SearchResult } from './types';
+import { Content } from "@ai16z/eliza";
+import { SearchPluginConfig, SearchResult } from "./types";
 
 export class ApiError extends Error {
-  constructor(message: string, public statusCode?: number) {
+  constructor(
+    message: string,
+    public statusCode?: number,
+  ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
 export const validateApiKey = (config: SearchPluginConfig): void => {
   if (!config.apiKey) {
-    throw new ApiError('API key is required');
+    throw new ApiError("API key is required");
   }
 };
 
 export const validateSearchQuery = (content: Content): string => {
-  const query = typeof content === 'string' ? content : content.text;
+  const query = typeof content === "string" ? content : content.text;
   if (!query?.trim()) {
-    throw new ApiError('Search query is required');
+    throw new ApiError("Search query is required");
   }
   return query.trim();
 };
 
-export const handleApiError = (error: unknown): { success: false; response: string } => {
+export const handleApiError = (
+  error: unknown,
+): { success: false; response: string } => {
   if (error instanceof ApiError) {
     return {
       success: false,
@@ -31,7 +36,7 @@ export const handleApiError = (error: unknown): { success: false; response: stri
   }
   return {
     success: false,
-    response: 'An unexpected error occurred',
+    response: "An unexpected error occurred",
   };
 };
 
@@ -40,7 +45,7 @@ export const formatSearchResults = (results: SearchResult[]): string => {
     .map((result, index) => {
       return `${index + 1}. ${result.title}\n   ${result.url}\n   ${result.snippet}\n`;
     })
-    .join('\n');
+    .join("\n");
 };
 
 export const createRateLimiter = (maxRequests: number, timeWindow: number) => {
@@ -64,6 +69,6 @@ export const createRateLimiter = (maxRequests: number, timeWindow: number) => {
       // Add new request
       requests.push(now);
       return true;
-    }
+    },
   };
 };

@@ -1,5 +1,5 @@
-import { Content } from '@ai16z/eliza';
-import { SearchPluginConfig, SearchResult } from './types';
+import { Content } from "@ai16z/eliza";
+import { SearchPluginConfig, SearchResult } from "./types";
 export declare class ApiError extends Error {
     statusCode?: number | undefined;
     constructor(message: string, statusCode?: number | undefined);

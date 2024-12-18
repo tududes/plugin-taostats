@@ -5,20 +5,20 @@ class ApiError extends Error {
     constructor(message, statusCode) {
         super(message);
         this.statusCode = statusCode;
-        this.name = 'ApiError';
+        this.name = "ApiError";
     }
 }
 exports.ApiError = ApiError;
 const validateApiKey = (config) => {
     if (!config.apiKey) {
-        throw new ApiError('API key is required');
+        throw new ApiError("API key is required");
     }
 };
 exports.validateApiKey = validateApiKey;
 const validateSearchQuery = (content) => {
-    const query = typeof content === 'string' ? content : content.text;
+    const query = typeof content === "string" ? content : content.text;
     if (!query?.trim()) {
-        throw new ApiError('Search query is required');
+        throw new ApiError("Search query is required");
     }
     return query.trim();
 };
@@ -32,7 +32,7 @@ const handleApiError = (error) => {
     }
     return {
         success: false,
-        response: 'An unexpected error occurred',
+        response: "An unexpected error occurred",
     };
 };
 exports.handleApiError = handleApiError;
@@ -41,7 +41,7 @@ const formatSearchResults = (results) => {
         .map((result, index) => {
         return `${index + 1}. ${result.title}\n   ${result.url}\n   ${result.snippet}\n`;
     })
-        .join('\n');
+        .join("\n");
 };
 exports.formatSearchResults = formatSearchResults;
 const createRateLimiter = (maxRequests, timeWindow) => {
@@ -61,7 +61,7 @@ const createRateLimiter = (maxRequests, timeWindow) => {
             // Add new request
             requests.push(now);
             return true;
-        }
+        },
     };
 };
 exports.createRateLimiter = createRateLimiter;
