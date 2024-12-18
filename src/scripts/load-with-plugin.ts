@@ -180,7 +180,7 @@ async function resolvePlugins(pluginNames: string[]): Promise<Plugin[]> {
     `Local plugins available: ${localPlugins.map((p) => p.name).join(", ")}`,
   );
 
-  return await Promise.all(
+  return Promise.all(
     pluginNames.map(async (pluginName) => {
       // Check if the plugin is local
       const localPlugin = localPlugins.find(
@@ -194,10 +194,7 @@ async function resolvePlugins(pluginNames: string[]): Promise<Plugin[]> {
 
       // Attempt to resolve from node_modules
       try {
-        import { createRequire } from "module";
-        const require = createRequire(import.meta.url);
-
-        const resolvedPath = require.resolve(pluginName, {
+        const resolvedPath = createRequire(import.meta.url).resolve(pluginName, {
           paths: [process.cwd()],
         });
         elizaLogger.info(`Resolved node_modules plugin: ${pluginName}`);
