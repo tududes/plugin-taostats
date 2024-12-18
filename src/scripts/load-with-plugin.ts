@@ -11,6 +11,7 @@ import {
 
 import { loadCharacters } from "./loader";
 import { DirectClient } from "@ai16z/client-direct";
+import { pathToFileURL } from "url";
 
 interface Plugin {
   name: string;
@@ -192,7 +193,7 @@ async function resolvePlugins(pluginNames: string[]): Promise<Plugin[]> {
 
       // Attempt to resolve from node_modules
       try {
-        import { createRequire } from 'module';
+        import { createRequire } from "module";
         const require = createRequire(import.meta.url);
 
         const resolvedPath = require.resolve(pluginName, {
