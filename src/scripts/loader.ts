@@ -37,7 +37,7 @@ function isAllStrings(arr: unknown[]): boolean {
 export async function loadCharacters(
   characterPath: string,
 ): Promise<Character[]> {
-  const loadedCharacters = [];
+  const loadedCharacters: Character[] = [];
   const content = tryLoadFile(characterPath);
 
   if (!content) {
