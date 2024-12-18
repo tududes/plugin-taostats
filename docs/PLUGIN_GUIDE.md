@@ -283,9 +283,14 @@ Please refer to the [official documentation](https://ai16z.github.io/eliza/docs/
    }
    ```
 
+## Further Notes
+
+The core abstractions in the Eliza frawework are Action, Provider, and Evaluator. Both of these plugins only implement the Action abstraction -- they may function a lot more smoothly if returning the results as a Provider, and adding Evaluators that determine when or if these specific search services ought to be called. Further development on this repo will illustrate adding plugins which add additional Providers and Evaluators, as well as the preferred way to add external services not directly implemented within the plugin code. Hopefully, this is enough to get you started on the right track -- I STRONGLY encourage you to review the documentation as well as the first few episodes of Agent Dev School on youtube to guide you along your journey with Eliza. She'll be right there with you. :)
+
 ## Resources
 
 - [Eliza Documentation](https://ai16z.github.io/eliza/)
 - [Tavily API Documentation](https://tavily.com/docs)
 - [Exa API Documentation](https://exa.ai/docs)
-- [Example Implementations](https://github.com/tmc/eliza-plugin-starter/tree/main/src/plugins)
+- [Example Implementations](https://github.com/ai16z/eliza/tree/main/packages)
+- [AI Agent Dev School](https://www.youtube.com/watch?v=ArptLpQiKfI&list=PLx5pnFXdPTRzWla0RaOxALTSTnVq53fKL&ab_channel=ShawMakesMagic)
