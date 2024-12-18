@@ -9,6 +9,8 @@ import {
   type IDatabaseAdapter,
 } from "@ai16z/eliza";
 
+elizaLogger.setLevel('debug');
+
 import { loadCharacters } from "./loader";
 import { DirectClient } from "@ai16z/client-direct";
 
@@ -89,8 +91,8 @@ class CompatibleCacheAdapter {
 // Function to dynamically load plugins from ./src/plugins
 
 async function loadLocalPlugins(): Promise<Plugin[]> {
-  const srcPluginsDir = path.resolve(process.cwd(), "./src/plugins");
-  const distPluginsDir = path.resolve(process.cwd(), "./dist/plugins");
+  const srcPluginsDir = path.resolve(__dirname, "../plugins");
+  const distPluginsDir = path.resolve(__dirname, "../../dist/plugins");
   const plugins: Plugin[] = [];
 
   elizaLogger.info(`Starting plugin loading process.`); // Ensure logger works
