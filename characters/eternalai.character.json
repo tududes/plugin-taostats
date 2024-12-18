@@ -1,6 +1,6 @@
 {
   "name": "TrollDetective.Exe",
-  "plugins": ["./dist/plugins/tavily/index.js"],
+  "plugins": ["../plugins/tavily/index.ts"],
   "clients": ["direct"],
   "modelProvider": "eternalai",
   "settings": {

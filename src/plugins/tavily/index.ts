@@ -1,6 +1,23 @@
-import { Content, IAgentRuntime, Memory, State, ActionExample } from '@ai16z/eliza';
-import { SearchPlugin, SearchPluginConfig, SearchResult, SearchAction } from '../../common/types';
-import { validateApiKey, validateSearchQuery, handleApiError, formatSearchResults, createRateLimiter } from '../../common/utils';
+import {
+  Content,
+  IAgentRuntime,
+  Memory,
+  State,
+  ActionExample,
+} from "@ai16z/eliza";
+import {
+  SearchPlugin,
+  SearchPluginConfig,
+  SearchResult,
+  SearchAction,
+} from "../../common/types.ts";
+import {
+  validateApiKey,
+  validateSearchQuery,
+  handleApiError,
+  formatSearchResults,
+  createRateLimiter,
+} from "../../common/utils.ts";
 
 interface TavilySearchResponse {
   results: Array<{
@@ -11,17 +28,17 @@ interface TavilySearchResponse {
 }
 
 export interface TavilyPluginConfig extends SearchPluginConfig {
-  searchType?: 'search' | 'news' | 'academic';
+  searchType?: "search" | "news" | "academic";
 }
 
 const DEFAULT_CONFIG: Partial<TavilyPluginConfig> = {
   maxResults: 5,
-  searchType: 'search',
+  searchType: "search",
 };
 
 export class TavilySearchPlugin implements SearchPlugin {
-  name = 'tavily-search';
-  description = 'Search the web using Tavily API';
+  readonly name: string = "tavily-search";
+  readonly description: string = "Search the web using Tavily API";
   config: TavilyPluginConfig;
   private rateLimiter = createRateLimiter(60, 60000); // 60 requests per minute
 
@@ -32,28 +49,32 @@ export class TavilySearchPlugin implements SearchPlugin {
 
   actions: SearchAction[] = [
     {
-      name: 'TAVILY_SEARCH',
-      description: 'Search the web using Tavily API',
+      name: "TAVILY_SEARCH",
+      description: "Search the web using Tavily API",
       examples: [
         [
           {
-            user: 'user',
-            content: { text: 'Search for recent AI developments' }
-          }
+            user: "user",
+            content: { text: "Search for recent AI developments" },
+          },
         ],
         [
           {
-            user: 'user',
-            content: { text: 'Find news about climate change' }
-          }
-        ]
+            user: "user",
+            content: { text: "Find news about climate change" },
+          },
+        ],
       ],
       similes: [
-        'like a knowledgeable research assistant',
-        'like a comprehensive web search engine',
-        'like having a librarian at your fingertips',
+        "like a knowledgeable research assistant",
+        "like a comprehensive web search engine",
+        "like having a librarian at your fingertips",
       ],
-      validate: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+      validate: async (
+        runtime: IAgentRuntime,
+        message: Memory,
+        state?: State,
+      ) => {
         try {
           validateSearchQuery(message.content);
           return true;
@@ -61,21 +82,25 @@ export class TavilySearchPlugin implements SearchPlugin {
           return false;
         }
       },
-      handler: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+      handler: async (
+        runtime: IAgentRuntime,
+        message: Memory,
+        state?: State,
+      ) => {
         try {
           if (!this.rateLimiter.checkLimit()) {
             return {
               success: false,
-              response: 'Rate limit exceeded. Please try again later.',
+              response: "Rate limit exceeded. Please try again later.",
             };
           }
 
           const query = validateSearchQuery(message.content);
-          const response = await fetch('https://api.tavily.com/search', {
-            method: 'POST',
+          const response = await fetch("https://api.tavily.com/search", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.config.apiKey}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.config.apiKey}`,
             },
             body: JSON.stringify({
               query,
@@ -89,11 +114,11 @@ export class TavilySearchPlugin implements SearchPlugin {
           }
 
           const data: TavilySearchResponse = await response.json();
-          const results: SearchResult[] = data.results.map(result => ({
+          const results: SearchResult[] = data.results.map((result) => ({
             title: result.title,
             url: result.url,
             snippet: result.content,
-            source: 'tavily',
+            source: "tavily",
           }));
 
           return {
@@ -107,3 +132,7 @@ export class TavilySearchPlugin implements SearchPlugin {
     },
   ];
 }
+
+export default new TavilySearchPlugin({
+  apiKey: process.env.TAVILY_API_KEY || "",
+});

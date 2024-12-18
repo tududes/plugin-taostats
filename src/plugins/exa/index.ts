@@ -1,6 +1,23 @@
-import { Content, IAgentRuntime, Memory, State, ActionExample } from '@ai16z/eliza';
-import { SearchPlugin, SearchPluginConfig, SearchResult, SearchAction } from '../../common/types';
-import { validateApiKey, validateSearchQuery, handleApiError, formatSearchResults, createRateLimiter } from '../../common/utils';
+import {
+  Content,
+  IAgentRuntime,
+  Memory,
+  State,
+  ActionExample,
+} from "@ai16z/eliza";
+import {
+  SearchPlugin,
+  SearchPluginConfig,
+  SearchResult,
+  SearchAction,
+} from "../../common/types.ts";
+import {
+  validateApiKey,
+  validateSearchQuery,
+  handleApiError,
+  formatSearchResults,
+  createRateLimiter,
+} from "../../common/utils.ts";
 
 interface ExaSearchResponse {
   results: Array<{
@@ -12,7 +29,7 @@ interface ExaSearchResponse {
 }
 
 export interface ExaPluginConfig extends SearchPluginConfig {
-  searchType?: 'semantic' | 'code' | 'document';
+  searchType?: "semantic" | "code" | "document";
   filters?: {
     language?: string;
     fileType?: string;
@@ -21,12 +38,12 @@ export interface ExaPluginConfig extends SearchPluginConfig {
 
 const DEFAULT_CONFIG: Partial<ExaPluginConfig> = {
   maxResults: 5,
-  searchType: 'semantic',
+  searchType: "semantic",
 };
 
 export class ExaSearchPlugin implements SearchPlugin {
-  name = 'exa-search';
-  description = 'Search using Exa API for semantic, code, and document search';
+  name = "exa-search";
+  description = "Search using Exa API for semantic, code, and document search";
   config: ExaPluginConfig;
   private rateLimiter = createRateLimiter(60, 60000); // 60 requests per minute
 
@@ -37,28 +54,32 @@ export class ExaSearchPlugin implements SearchPlugin {
 
   actions: SearchAction[] = [
     {
-      name: 'EXA_SEARCH',
-      description: 'Search using Exa API',
+      name: "EXA_SEARCH",
+      description: "Search using Exa API",
       examples: [
         [
           {
-            user: 'user',
-            content: { text: 'Find code examples for implementing OAuth' }
-          }
+            user: "user",
+            content: { text: "Find code examples for implementing OAuth" },
+          },
         ],
         [
           {
-            user: 'user',
-            content: { text: 'Search for documentation about GraphQL' }
-          }
-        ]
+            user: "user",
+            content: { text: "Search for documentation about GraphQL" },
+          },
+        ],
       ],
       similes: [
-        'like having a code-aware search engine',
-        'like a technical documentation expert',
-        'like a semantic code analyzer',
+        "like having a code-aware search engine",
+        "like a technical documentation expert",
+        "like a semantic code analyzer",
       ],
-      validate: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+      validate: async (
+        runtime: IAgentRuntime,
+        message: Memory,
+        state?: State,
+      ) => {
         try {
           validateSearchQuery(message.content);
           return true;
@@ -66,21 +87,25 @@ export class ExaSearchPlugin implements SearchPlugin {
           return false;
         }
       },
-      handler: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+      handler: async (
+        runtime: IAgentRuntime,
+        message: Memory,
+        state?: State,
+      ) => {
         try {
           if (!this.rateLimiter.checkLimit()) {
             return {
               success: false,
-              response: 'Rate limit exceeded. Please try again later.',
+              response: "Rate limit exceeded. Please try again later.",
             };
           }
 
           const query = validateSearchQuery(message.content);
-          const response = await fetch('https://api.exa.ai/search', {
-            method: 'POST',
+          const response = await fetch("https://api.exa.ai/search", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.config.apiKey}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.config.apiKey}`,
             },
             body: JSON.stringify({
               query,
@@ -95,12 +120,12 @@ export class ExaSearchPlugin implements SearchPlugin {
           }
 
           const data: ExaSearchResponse = await response.json();
-          const results: SearchResult[] = data.results.map(result => ({
+          const results: SearchResult[] = data.results.map((result) => ({
             title: result.title,
             url: result.url,
             snippet: result.snippet,
             score: result.score,
-            source: 'exa',
+            source: "exa",
           }));
 
           return {

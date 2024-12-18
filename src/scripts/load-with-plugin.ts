@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
-import { createRequire } from 'module';
+import { createRequire } from "module";
 import {
   AgentRuntime,
   elizaLogger,
@@ -10,9 +10,13 @@ import {
   type IDatabaseAdapter,
 } from "@ai16z/eliza";
 
-import { loadCharacters } from "./loader";
+import { loadCharacters } from "./loader.ts";
 import { DirectClient } from "@ai16z/client-direct";
-import { pathToFileURL } from "url";
+import { pathToFileURL, fileURLToPath } from "url";
+
+// ES Module dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface Plugin {
   name: string;
@@ -91,22 +95,13 @@ class CompatibleCacheAdapter {
 // Function to dynamically load plugins from ./src/plugins
 
 async function loadLocalPlugins(): Promise<Plugin[]> {
-  const srcPluginsDir = path.resolve(__dirname, "../plugins");
-  const distPluginsDir = path.resolve(__dirname, "../../dist/plugins");
+  const pluginsDir = path.resolve(__dirname, "../plugins");
   const plugins: Plugin[] = [];
 
   elizaLogger.info(`Starting plugin loading process.`); // Ensure logger works
-  console.log(
-    `DEBUG: Checking plugin directories: ${srcPluginsDir}, ${distPluginsDir}`,
-  ); // Fallback log
+  console.log(`DEBUG: Checking plugins directory: ${pluginsDir}`); // Fallback log
 
-  for (const pluginsDir of [srcPluginsDir, distPluginsDir]) {
-    if (!fs.existsSync(pluginsDir)) {
-      elizaLogger.warn(`Plugins directory not found: ${pluginsDir}`);
-      console.log(`DEBUG: Directory not found: ${pluginsDir}`); // Fallback log
-      continue;
-    }
-
+  if (fs.existsSync(pluginsDir)) {
     const entries = fs.readdirSync(pluginsDir);
     elizaLogger.info(`Found entries in ${pluginsDir}: ${entries.join(", ")}`);
     console.log(`DEBUG: Entries in ${pluginsDir}: ${entries.join(", ")}`); // Fallback log
@@ -159,6 +154,11 @@ async function loadLocalPlugins(): Promise<Plugin[]> {
         console.error(`DEBUG: Error loading plugin from: ${entry}`, error); // Fallback log
       }
     }
+
+    return plugins;
+  } else {
+    elizaLogger.warn(`Plugins directory not found: ${pluginsDir}`);
+    console.log(`DEBUG: Directory not found: ${pluginsDir}`); // Fallback log
   }
 
   elizaLogger.info(
@@ -194,9 +194,12 @@ async function resolvePlugins(pluginNames: string[]): Promise<Plugin[]> {
 
       // Attempt to resolve from node_modules
       try {
-        const resolvedPath = createRequire(import.meta.url).resolve(pluginName, {
-          paths: [process.cwd()],
-        });
+        const resolvedPath = createRequire(import.meta.url).resolve(
+          pluginName,
+          {
+            paths: [process.cwd()],
+          },
+        );
         elizaLogger.info(`Resolved node_modules plugin: ${pluginName}`);
         const importedPlugin = await import(resolvedPath);
         return importedPlugin.default || importedPlugin;
