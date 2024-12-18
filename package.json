@@ -4,6 +4,7 @@
   "description": "Starter template for creating Eliza plugins with examples for Tavily and Exa search",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc && cp -R src/plugins dist/plugins",
     "dev": "tsc -w",
