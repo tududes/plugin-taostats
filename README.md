@@ -21,10 +21,21 @@ cd eliza-plugin-starter
 pnpm install
 ```
 
-3. Build the project:
+3. Compile the TypeScript code:
 ```bash
-pnpm build
+pnpm tsc
 ```
+
+4. Run the project using the 'direct' client:
+```bash
+pnpm exec node --loader ts-node/esm ./src/scripts/load-with-plugin.ts --characters=./characters/eternalai.character.json
+```
+
+**Note:** Only the 'direct' client will work within this repo since it uses mocked capabilities of the real client. Plugins developed here can be directly transposed into the main Eliza repository.
+
+## Project Overview
+
+This starter template is designed to work with the 'direct' client within this repository due to the mocked capabilities of the real client. Plugins developed here are fully compatible with the main Eliza repository and can be directly transposed.
 
 ## Project Structure
 
@@ -40,6 +51,24 @@ src/
 ## Creating a Plugin
 
 See the [Plugin Development Guide](docs/PLUGIN_GUIDE.md) for detailed instructions on creating your own plugin.
+
+## Running the Project
+
+You can run the project using the following command:
+
+```bash
+pnpm exec node --loader ts-node/esm ./src/scripts/load-with-plugin.ts --characters=./characters/eternalai.character.json
+```
+
+**Alternatively,** to simplify this process, use the predefined script:
+
+```bash
+pnpm mock-eliza --characters=./characters/eternalai.character.json
+```
+
+This script will prompt for a comma-separated list of character files to load.
+
+**Note:** The 'mock-eliza' script uses the 'direct' client because the project contains mocked capabilities of the real client.
 
 ## Example Plugins
 
