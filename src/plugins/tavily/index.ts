@@ -65,11 +65,7 @@ export class TavilySearchPlugin implements SearchPlugin {
           },
         ],
       ],
-      similes: [
-        "like a knowledgeable research assistant",
-        "like a comprehensive web search engine",
-        "like having a librarian at your fingertips",
-      ],
+      similes: ["tavily", "tavilysearch", "agent search"],
       validate: async (
         runtime: IAgentRuntime,
         message: Memory,

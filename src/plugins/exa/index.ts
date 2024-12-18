@@ -70,11 +70,7 @@ export class ExaSearchPlugin implements SearchPlugin {
           },
         ],
       ],
-      similes: [
-        "like having a code-aware search engine",
-        "like a technical documentation expert",
-        "like a semantic code analyzer",
-      ],
+      similes: ["exa", "exasearch", "semantic web search"],
       validate: async (
         runtime: IAgentRuntime,
         message: Memory,

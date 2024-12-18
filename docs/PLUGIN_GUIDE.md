@@ -14,6 +14,7 @@ This guide provides step-by-step instructions for implementing search plugins fo
 ## Project Setup
 
 1. Clone the starter repository:
+
    ```bash
    git clone https://github.com/tmc/eliza-plugin-starter
    cd eliza-plugin-starter
@@ -21,6 +22,7 @@ This guide provides step-by-step instructions for implementing search plugins fo
    ```
 
 2. Set up your environment:
+
    ```bash
    # Create a .env file
    touch .env
@@ -52,37 +54,40 @@ export class SearchPlugin implements Plugin {
 }
 ```
 
+Please refer to the [official documentation](https://ai16z.github.io/eliza/docs/packages/plugins/) for further details about how to implement a plugin for your specific use case.
+
 ## Implementing Tavily Search Plugin
 
 1. **Create Plugin Configuration**
+
    ```typescript
    interface TavilyPluginConfig extends SearchPluginConfig {
-     searchType?: 'search' | 'news' | 'academic';
+     searchType?: "search" | "news" | "academic";
    }
 
    const DEFAULT_CONFIG: Partial<TavilyPluginConfig> = {
      maxResults: 5,
-     searchType: 'search',
+     searchType: "search",
    };
    ```
 
 2. **Implement Search Action**
+
    ```typescript
    const TAVILY_SEARCH: SearchAction = {
-     name: 'TAVILY_SEARCH',
-     description: 'Search the web using Tavily API',
+     name: "TAVILY_SEARCH",
+     description: "Search the web using Tavily API",
+     // Refer to the documentation for proper examples of example array format, these should show the agent how the plugin is used, not be a single message that indicates what might trigger it.
      examples: [
        [
          {
-           user: 'user',
-           content: { text: 'Search for recent AI developments' }
-         }
-       ]
+           user: "user",
+           content: { text: "Search for recent AI developments" },
+         },
+       ],
      ],
-     similes: [
-       'like a knowledgeable research assistant',
-       'like a comprehensive web search engine'
-     ],
+     // the similes array is just in case the model decides the action it's trying to perform is called something different today, which occasionally happens with small models. Mostly superfluous these days, but we still keep it around just in case.
+     similes: ["tavilysearch", "tavily"],
      validate: async (runtime, message, state) => {
        try {
          validateSearchQuery(message.content);
@@ -93,11 +98,12 @@ export class SearchPlugin implements Plugin {
      },
      handler: async (runtime, message, state) => {
        // Implementation details below
-     }
+     },
    };
    ```
 
 3. **Implement API Integration**
+
    ```typescript
    async handler(runtime, message, state) {
      try {
@@ -130,9 +136,11 @@ export class SearchPlugin implements Plugin {
 ## Implementing Exa Search Plugin
 
 1. **Create Plugin Configuration**
+
    ```typescript
+   // It will be helpful here to examine the SearchPlugin that already exists in the @ai16z/eliza main repository to see what fields are required when defining a plugin interface, as well as how we extend them here.
    interface ExaPluginConfig extends SearchPluginConfig {
-     searchType?: 'semantic' | 'code' | 'document';
+     searchType?: "semantic" | "code" | "document";
      filters?: {
        language?: string;
        fileType?: string;
@@ -141,27 +149,27 @@ export class SearchPlugin implements Plugin {
 
    const DEFAULT_CONFIG: Partial<ExaPluginConfig> = {
      maxResults: 5,
-     searchType: 'semantic',
+     searchType: "semantic",
    };
    ```
 
 2. **Implement Search Action**
+
    ```typescript
    const EXA_SEARCH: SearchAction = {
-     name: 'EXA_SEARCH',
-     description: 'Search using Exa API for semantic, code, and document search',
+     name: "EXA_SEARCH",
+     description:
+       "Search using Exa API for semantic, code, and document search",
+     // this is also a bad example of an examples array. I'll update this in the future to be more useful, but for now, refer to the official documenation for how the examples array ought to be formatted.
      examples: [
        [
          {
-           user: 'user',
-           content: { text: 'Find code examples for implementing OAuth' }
-         }
-       ]
+           user: "user",
+           content: { text: "Find code examples for implementing OAuth" },
+         },
+       ],
      ],
-     similes: [
-       'like having a code-aware search engine',
-       'like a technical documentation expert'
-     ],
+     similes: ["exa", "exasearch"],
      validate: async (runtime, message, state) => {
        try {
          validateSearchQuery(message.content);
@@ -172,11 +180,12 @@ export class SearchPlugin implements Plugin {
      },
      handler: async (runtime, message, state) => {
        // Implementation details below
-     }
+     },
    };
    ```
 
 3. **Implement API Integration**
+
    ```typescript
    async handler(runtime, message, state) {
      try {
@@ -210,28 +219,28 @@ export class SearchPlugin implements Plugin {
 ## Testing Your Implementation
 
 1. **Unit Tests**
+
    ```typescript
-   describe('SearchPlugin', () => {
-     it('should validate search queries', async () => {
+   describe("SearchPlugin", () => {
+     it("should validate search queries", async () => {
        const plugin = new SearchPlugin(config);
-       const result = await plugin.actions[0].validate(
-         runtime,
-         { content: { text: 'test query' } }
-       );
+       const result = await plugin.actions[0].validate(runtime, {
+         content: { text: "test query" },
+       });
        expect(result).toBe(true);
      });
    });
    ```
 
 2. **Integration Testing**
+
    ```typescript
-   describe('API Integration', () => {
-     it('should return search results', async () => {
+   describe("API Integration", () => {
+     it("should return search results", async () => {
        const plugin = new SearchPlugin(config);
-       const results = await plugin.actions[0].handler(
-         runtime,
-         { content: { text: 'test query' } }
-       );
+       const results = await plugin.actions[0].handler(runtime, {
+         content: { text: "test query" },
+       });
        expect(results.success).toBe(true);
        expect(Array.isArray(results.response)).toBe(true);
      });
@@ -241,18 +250,20 @@ export class SearchPlugin implements Plugin {
 ## Error Handling and Best Practices
 
 1. **Rate Limiting**
+
    ```typescript
    const rateLimiter = createRateLimiter(60, 60000); // 60 requests per minute
 
    if (!rateLimiter.checkLimit()) {
      return {
        success: false,
-       response: 'Rate limit exceeded. Please try again later.',
+       response: "Rate limit exceeded. Please try again later.",
      };
    }
    ```
 
 2. **Error Handling**
+
    ```typescript
    try {
      // API calls
@@ -262,10 +273,11 @@ export class SearchPlugin implements Plugin {
    ```
 
 3. **Input Validation**
+
    ```typescript
    function validateSearchQuery(content: Content): string {
      if (!content?.text) {
-       throw new Error('Search query is required');
+       throw new Error("Search query is required");
      }
      return content.text.trim();
    }
