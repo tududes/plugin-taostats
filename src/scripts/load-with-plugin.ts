@@ -1,5 +1,5 @@
-import path from "path";
-import fs from "fs";
+import * as path from "path";
+import * as fs from "fs";
 import {
   AgentRuntime,
   elizaLogger,
@@ -192,6 +192,9 @@ async function resolvePlugins(pluginNames: string[]): Promise<Plugin[]> {
 
       // Attempt to resolve from node_modules
       try {
+        import { createRequire } from 'module';
+        const require = createRequire(import.meta.url);
+
         const resolvedPath = require.resolve(pluginName, {
           paths: [process.cwd()],
         });
