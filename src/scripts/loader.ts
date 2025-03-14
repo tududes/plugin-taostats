@@ -49,14 +49,27 @@ export async function loadCharacters(
 
   try {
     const character = JSON.parse(content);
+    console.log("DEBUG: Parsed character:", JSON.stringify(character, null, 2).substring(0, 200) + "...");
     validateCharacterConfig(character);
 
     if (isAllStrings(character.plugins)) {
       elizaLogger.info("Plugins are: ", character.plugins);
+      console.log("DEBUG: Type of plugins:", typeof character.plugins);
+      console.log("DEBUG: isAllStrings result:", isAllStrings(character.plugins));
+      console.log("DEBUG: About to map plugins...");
       const importedPlugins = await Promise.all(
         character.plugins.map(async (plugin: any) => {
-          const importedPlugin = await import(plugin);
-          return importedPlugin.default;
+          console.log("DEBUG: Importing plugin:", plugin);
+          try {
+            console.log("DEBUG: Before import");
+            const importedPlugin = await import(plugin);
+            console.log("DEBUG: After import, importedPlugin:", importedPlugin);
+            console.log("DEBUG: importedPlugin.default:", importedPlugin.default);
+            return importedPlugin.default;
+          } catch (e) {
+            console.error("DEBUG: Error importing plugin:", e);
+            throw e;
+          }
         }),
       );
       character.plugins = importedPlugins;

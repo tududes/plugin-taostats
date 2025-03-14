@@ -6,12 +6,16 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc && cp -R src/plugins dist/plugins",
+    "build": "tsc -p .",
+    "clean": "rm -rf dist",
+    "debug": "node --loader ts-node/esm debug.js",
+    "debug:taostats": "node --loader ts-node/esm src/plugins/taostats/debugTaostats.js",
     "dev": "tsc -w",
     "test": "jest",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src",
-    "mock-eliza": "node --loader ts-node/esm ./src/scripts/load-with-plugin.ts"
+    "mock-eliza": "node --loader ts-node/esm ./src/scripts/load-with-plugin.ts",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [
     "eliza",

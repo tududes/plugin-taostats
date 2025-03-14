@@ -58,7 +58,19 @@ export class TaostatsPlugin implements Plugin {
 }
 
 // Export default instance with API key from environment variable
-console.log("Creating TaostatsPlugin with API key:", process.env.TAOSTATS_API_KEY ? "Key found" : "Key not found");
-export default new TaostatsPlugin({
+console.log(`[TAOSTATS] Creating TaostatsPlugin with API key: ${process.env.TAOSTATS_API_KEY ? "Key found" : "Key not found"}`);
+if (!process.env.TAOSTATS_API_KEY) {
+  console.error("[TAOSTATS] WARNING: No API key found in environment variables. API calls may fail.");
+}
+
+console.log(`[TAOSTATS] Base URL: ${DEFAULT_CONFIG.baseUrl}`);
+console.log(`[TAOSTATS] Default timeout: ${DEFAULT_CONFIG.timeoutMs}ms`);
+
+const taostatsPlugin = new TaostatsPlugin({
   apiKey: process.env.TAOSTATS_API_KEY || "",
-}); 
+});
+
+console.log(`[TAOSTATS] Plugin initialized with ${taostatsPlugin.actions.length} actions`);
+console.log(`[TAOSTATS] Available actions: ${taostatsPlugin.actions.map(a => a.name).join(', ')}`);
+
+export default taostatsPlugin; 

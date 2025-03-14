@@ -6,13 +6,15 @@ export interface TaostatsPluginConfig {
   baseUrl?: string;
   maxResults?: number;
   rateLimitPerMinute?: number;
+  timeoutMs?: number;
 }
 
 // Default configuration values
 export const DEFAULT_CONFIG: Partial<TaostatsPluginConfig> = {
-  baseUrl: "https://api.taostats.io/v2",
+  baseUrl: "https://api.taostats.io/api",
   maxResults: 10,
   rateLimitPerMinute: 60,
+  timeoutMs: 10000, // 10 seconds timeout by default
 };
 
 // Price data types

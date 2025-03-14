@@ -91,36 +91,56 @@ Total Events: ${data.totalEvents.toLocaleString()}
 
 // Format subnet data
 export const formatSubnetData = (subnet: SubnetData): string => {
-  const emission = subnet.emission.toLocaleString("en-US", {
-    maximumFractionDigits: 6,
-  });
+  if (!subnet) {
+    return "No subnet data available from the API. This could be due to API limitations or access restrictions.";
+  }
   
-  const registrationCost = subnet.registrationCost.toLocaleString("en-US", {
-    maximumFractionDigits: 6,
-  });
+  let output = `Subnet ${subnet.netuid} Details:\n\n`;
   
-  return `
-Subnet ${subnet.netuid}: ${subnet.name}
-Description: ${subnet.description}
-Owner: ${subnet.owner}
-Emission: ${emission} τ
-Registration Cost: ${registrationCost} τ
-Total Stake: ${subnet.totalStake.toLocaleString()} τ
-Validators: ${subnet.totalValidators}
-Miners: ${subnet.totalMiners}
-  `.trim();
+  // Name and description
+  output += `Name: ${subnet.name || `Subnet ${subnet.netuid}`}\n`;
+  output += `Description: ${subnet.description || "No description available"}\n\n`;
+  
+  // Owner and registration info
+  output += `Owner: ${subnet.owner || "Unknown"}\n`;
+  output += `Registration Cost: τ${subnet.registrationCost.toFixed(4)}\n\n`;
+  
+  // Network statistics
+  output += "Network Statistics:\n";
+  output += `- Total Stake: τ${subnet.totalStake.toFixed(4)}\n`;
+  output += `- Total Validators: ${subnet.totalValidators}\n`;
+  output += `- Total Miners: ${subnet.totalMiners}\n`;
+  output += `- Emission: τ${subnet.emission.toFixed(4)}/block\n`;
+  
+  return output;
 };
 
 // Format subnets list
 export const formatSubnetsList = (subnets: SubnetData[]): string => {
-  const formattedSubnets = subnets.map(subnet => {
-    return `Subnet ${subnet.netuid}: ${subnet.name} | Emission: ${subnet.emission.toFixed(6)} τ | Validators: ${subnet.totalValidators} | Miners: ${subnet.totalMiners}`;
-  });
+  if (!subnets || subnets.length === 0) {
+    return "No subnet data available from the API. This could be due to API limitations or access restrictions.";
+  }
+
+  // Sort subnets by netuid
+  const sortedSubnets = [...subnets].sort((a, b) => a.netuid - b.netuid);
   
-  return `
-Available Subnets:
-${formattedSubnets.join("\n")}
-  `.trim();
+  let output = "Available Bittensor Subnets:\n\n";
+  output += "┌───────┬────────────────────┬────────────────────────┬────────────┬───────────────┐\n";
+  output += "│ NetUID│ Name               │ Owner                  │ Validators │ Total Stake   │\n";
+  output += "├───────┼────────────────────┼────────────────────────┼────────────┼───────────────┤\n";
+  
+  for (const subnet of sortedSubnets) {
+    const netuid = subnet.netuid.toString().padEnd(6);
+    const name = (subnet.name || `Subnet ${subnet.netuid}`).slice(0, 18).padEnd(18);
+    const owner = (subnet.owner || "Unknown").slice(0, 20).padEnd(20);
+    const validators = subnet.totalValidators.toString().padEnd(10);
+    const stake = subnet.totalStake.toFixed(2).padEnd(13);
+    
+    output += `│ ${netuid}│ ${name}│ ${owner}│ ${validators}│ ${stake}│\n`;
+  }
+  
+  output += "└───────┴────────────────────┴────────────────────────┴────────────┴───────────────┘\n";
+  return output;
 };
 
 // Format validator data
