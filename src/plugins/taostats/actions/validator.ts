@@ -54,7 +54,8 @@ export const TAOSTATS_VALIDATOR_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
@@ -131,7 +132,8 @@ export const TAOSTATS_VALIDATORS_IN_SUBNET_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
@@ -166,7 +168,7 @@ export const TAOSTATS_VALIDATORS_IN_SUBNET_ACTION: SearchAction = {
         };
       }
 
-      const formattedValidators = response.data.map((validator, index) => {
+      const formattedValidators = response.data.map((validator: any, index: number) => {
         return `${index + 1}. Validator: ${validator.hotkey.substring(0, 10)}...\n   Stake: ${validator.stake.toFixed(6)} τ\n   Rank: ${validator.rank}\n   Emission: ${validator.emission.toFixed(6)} τ`;
       }).join("\n\n");
 

@@ -2,6 +2,10 @@ import { Plugin, Service } from "@ai16z/eliza";
 import { TaostatsPluginConfig, DEFAULT_CONFIG } from "./api/types.ts";
 import { TaostatsApiClient } from "./api/client.ts";
 import { validateApiKey } from "../../common/utils.ts";
+import * as dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Import actions
 import { TAOSTATS_PRICE_ACTION, TAOSTATS_PRICE_HISTORY_ACTION } from "./actions/price.ts";
@@ -43,15 +47,18 @@ export class TaostatsPlugin implements Plugin {
     TAOSTATS_ACCOUNT_ACTION,
   ];
 
-  services: Service[] = [
-    {
-      name: "taostatsApiClient",
-      instance: () => this.apiClient,
-    },
-  ];
+  get services() {
+    return [
+      {
+        name: "taostatsApiClient",
+        value: this.apiClient,
+      } as unknown as Service,
+    ];
+  }
 }
 
 // Export default instance with API key from environment variable
+console.log("Creating TaostatsPlugin with API key:", process.env.TAOSTATS_API_KEY ? "Key found" : "Key not found");
 export default new TaostatsPlugin({
   apiKey: process.env.TAOSTATS_API_KEY || "",
 }); 

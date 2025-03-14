@@ -13,6 +13,11 @@ import {
 import { loadCharacters } from "./loader.ts";
 import { DirectClient } from "@ai16z/client-direct";
 import { pathToFileURL, fileURLToPath } from "url";
+import * as dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
+console.log("Loaded .env file. TAOSTATS_API_KEY:", process.env.TAOSTATS_API_KEY ? "Key found" : "Key not found");
 
 // ES Module dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -219,6 +224,14 @@ function isStringArray(plugins: unknown): plugins is string[] {
 async function main() {
   elizaLogger.info("Starting Eliza Agent...");
 
+  // Parse command line arguments for port
+  let portArg = process.argv.find(arg => arg.startsWith('--port='));
+  let port = 3000; // Default port
+  if (portArg) {
+    port = parseInt(portArg.split('=')[1], 10);
+    console.log(`Using custom port: ${port}`);
+  }
+
   const characters: Character[] = await loadCharacters("characters.json");
   const localPlugins = await loadLocalPlugins();
   console.log(
@@ -255,7 +268,7 @@ async function main() {
 
     const directClient = new DirectClient();
     directClient.registerAgent(runtime);
-    directClient.start(3000);
+    directClient.start(port);
   }
 
   elizaLogger.success("Eliza agents started successfully!");

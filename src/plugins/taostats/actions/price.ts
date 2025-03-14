@@ -55,7 +55,8 @@ export const TAOSTATS_PRICE_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
@@ -133,7 +134,8 @@ export const TAOSTATS_PRICE_HISTORY_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,

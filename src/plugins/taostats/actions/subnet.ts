@@ -57,14 +57,15 @@ export const TAOSTATS_SUBNETS_LIST_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
           response: "Taostats API client is not available",
         };
       }
-
+      
       const response = await apiClient.getSubnets();
       
       if (!response.success || !response.data) {
@@ -134,14 +135,15 @@ export const TAOSTATS_SUBNET_DETAILS_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
           response: "Taostats API client is not available",
         };
       }
-
+      
       const query = extractQuery(message.content);
       const subnetId = extractSubnetId(query);
 

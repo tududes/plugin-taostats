@@ -66,6 +66,12 @@ Run Eliza with the provided Taostats character:
 pnpm mock-eliza --characters=./characters/taostats.character.json
 ```
 
+Alternatively, you can run using the load-with-plugin script with a custom port:
+
+```bash
+pnpm exec node --loader ts-node/esm ./src/scripts/load-with-plugin.ts --characters=./characters/taostats.character.json --port=4000
+```
+
 ### Example Queries
 
 Here are some example queries you can use with the Taostats plugin:

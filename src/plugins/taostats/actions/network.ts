@@ -57,14 +57,15 @@ export const TAOSTATS_BLOCKS_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
           response: "Taostats API client is not available",
         };
       }
-
+      
       // Determine the limit based on the query
       const query = extractQuery(message.content).toLowerCase();
       let limit = 5;
@@ -141,14 +142,15 @@ export const TAOSTATS_NETWORK_STATS_ACTION: SearchAction = {
     state?: State,
   ) => {
     try {
-      const apiClient = runtime.services?.get("taostatsApiClient") as TaostatsApiClient;
+      // @ts-ignore - Service access pattern may vary between Eliza versions
+      const apiClient = runtime.services?.taostatsApiClient?.value || runtime.services?.get("taostatsApiClient")?.instance?.();
       if (!apiClient) {
         return {
           success: false,
           response: "Taostats API client is not available",
         };
       }
-
+      
       const response = await apiClient.getNetworkStats();
       
       if (!response.success || !response.data) {
