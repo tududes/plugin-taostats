@@ -1,30 +1,60 @@
-# Taostats API Plugin
+# Taostats API Plugin for Eliza OS
 
-This plugin provides a client for interacting with the [Taostats API](https://taostats.io/), which offers comprehensive data about the Bittensor network, including prices, validators, subnets, and more.
+This plugin provides Eliza OS agents with the ability to interact with the [Taostats API](https://taostats.io/), offering comprehensive data about the Bittensor network, including prices, validators, subnets, and more.
 
 ## Installation
 
+### Option 1: Add to Your Eliza OS Project
+
 ```bash
+# Navigate to your Eliza OS project
+cd your-eliza-project
+
+# Install the plugin
 npm install plugin-taostats
+```
+
+### Option 2: Clone and Build
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/plugin-taostats.git
+cd plugin-taostats
+
+# Install dependencies
+npm install
+
+# Build the plugin
+npm run build
 ```
 
 ## Configuration
 
-Set up your environment variables in a `.env` file:
+1. Set up your environment variables in a `.env` file:
 
 ```
 TAOSTATS_API_KEY=your_api_key_here
 ```
 
-## Usage
+2. Configure your Eliza OS character to use the plugin:
 
-### Basic Usage
+```json
+{
+  "name": "Your Character",
+  "plugins": ["taostats"],
+  "other_character_properties": "..."
+}
+```
+
+## Integrating with Eliza OS
+
+### Loading the Plugin
 
 ```javascript
-import { TaostatsApiClient } from 'plugin-taostats';
+import { TaostatsPlugin } from 'plugin-taostats';
 
-// Create an API client
-const taostatsClient = new TaostatsApiClient({
+// Create an instance of the plugin with your configuration
+const taostatsPlugin = new TaostatsPlugin({
   apiKey: process.env.TAOSTATS_API_KEY,
   // Optional configuration
   // baseUrl: 'https://api.taostats.io/api',
@@ -32,26 +62,58 @@ const taostatsClient = new TaostatsApiClient({
   // rateLimitPerMinute: 60,
 });
 
-// Example: Get current price
-const priceData = await taostatsClient.getPrice();
-console.log(`Current TAO price: $${priceData.data.price}`);
+// Add the plugin to your Eliza OS runtime
+const runtime = new AgentRuntime({
+  // Other runtime configuration...
+  plugins: [taostatsPlugin]
+});
 ```
 
-### Response Format
+### Using the Plugin's Actions
 
-All API responses follow a standard format:
+Once the plugin is loaded, Eliza OS will automatically use its actions based on user queries. For example:
+
+- "What is the current price of TAO?" - Triggers the TAOSTATS_PRICE action
+- "Show me TAO price history" - Triggers the TAOSTATS_PRICE_HISTORY action
+- "Tell me about validator 5F59Ca..." - Triggers the TAOSTATS_VALIDATOR action
+
+### Direct Access to the API Client
+
+You can also access the Taostats API client directly in your custom plugins or actions:
 
 ```javascript
-{
-  success: boolean,
-  data?: T,
-  error?: string
-}
+// In your custom plugin or action handler
+const apiClient = runtime.services.taostatsApiClient.value;
+const priceData = await apiClient.getPrice();
 ```
+
+## Testing and Debugging
+
+The plugin includes a debugging script to test API connectivity and functionality:
+
+```bash
+# Make sure your API key is in the .env file
+echo "TAOSTATS_API_KEY=your_api_key_here" > .env
+
+# Run the debugging script
+npm run debug:taostats
+```
+
+The script will:
+1. Select random endpoints from different categories
+2. Execute each with sample parameters
+3. Display results and any errors
+4. Provide a summary of successful and failed calls
+
+This helps verify:
+- Your API key is working
+- API connectivity
+- Endpoint functionality
+- Rate limiting status
 
 ## Available Endpoints
 
-The client provides access to the following categories of endpoints:
+The plugin provides access to all Taostats API endpoints through the following categories:
 
 ### Price Endpoints
 
@@ -159,36 +221,24 @@ The client provides access to the following categories of endpoints:
 - `getEVMContract(address)`: Get EVM contract
 - `getEVMLog(address?, topic0?, topic1?, topic2?, topic3?, limit = 10)`: Get EVM logs
 
-## Debugging and Testing
+## Response Format
 
-To help verify that the API client is working properly, you can use the included debugging script that tests randomly selected endpoints from different categories:
+All API responses follow a standard format:
 
-```bash
-# Make sure your API key is in the .env file
-echo "TAOSTATS_API_KEY=your_api_key_here" > .env
-
-# Run the debugging script
-node --loader ts-node/esm src/plugins/taostats/debugTaostats.js
+```javascript
+{
+  success: boolean,
+  data?: T,
+  error?: string
+}
 ```
-
-The script will:
-1. Select one random endpoint from each of these categories: Classic, dTAO, EVM, Metagraph, and Accounting
-2. Execute each selected endpoint with sample parameters
-3. Display the results of each call, including success or error information
-4. Provide a summary of which calls succeeded and which failed
-
-This is helpful for:
-- Verifying your API key is working
-- Testing API connectivity 
-- Validating that new endpoints are functioning correctly
-- Checking if rate limiting is affecting your requests
 
 ## Rate Limiting
 
-The Taostats API has rate limits in place. The client implements a basic rate limiter to help manage requests. If you encounter rate limiting errors, consider:
+The Taostats API has rate limits. The client handles this with a basic rate limiter, but if you encounter rate limiting errors, consider:
 
-1. Reducing the frequency of your requests
-2. Using a higher `rateLimitPerMinute` value in your configuration if your API key allows it
+1. Reducing request frequency
+2. Increasing `rateLimitPerMinute` if your API key allows
 3. Implementing retry logic with exponential backoff
 
 ## License
