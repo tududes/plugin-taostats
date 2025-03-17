@@ -58,6 +58,7 @@ The client provides access to the following categories of endpoints:
 - `getPrice(asset = 'tao')`: Get the current price
 - `getPriceHistory(interval = '1d', limit = 30)`: Get historical price data
 - `getPriceOHLC(interval = '1d', limit = 30)`: Get OHLC price data
+- `getTradingViewHistory(resolution = 'D', from?, to?)`: Get data for TradingView charts
 
 ### Network/Block Endpoints
 
@@ -77,6 +78,13 @@ The client provides access to the following categories of endpoints:
 - `getSubnetDescription(netuid)`: Get the description of a subnet
 - `getSubnetRegistrationCostLatest()`: Get latest subnet registration cost
 - `getSubnetRegistrationCostHistory(limit = 10)`: Get history of subnet registration costs
+- `getSubnetIPDistribution(netuid)`: Get IP distribution for a subnet
+- `getSubnetColdkeyDistribution(netuid)`: Get coldkey distribution for a subnet
+- `getSubnetIncentiveDistribution(netuid)`: Get incentive distribution for a subnet
+- `getSubnetRegistrations(limit = 10)`: Get recent subnet registrations
+- `getSubnetNeuronRegistrations(netuid, limit = 10)`: Get neuron registrations for a subnet
+- `getSubnetNeuronDeregistrations(netuid, limit = 10)`: Get neuron deregistrations for a subnet
+- `getSubnetEmission(netuid)`: Get emission for a subnet
 
 ### Validator Endpoints
 
@@ -89,6 +97,26 @@ The client provides access to the following categories of endpoints:
 - `getValidatorMetricsHistory(hotkey, limit = 10)`: Get metric history for a validator
 - `getValidatorPerformance(hotkey)`: Get performance metrics for a validator
 - `getValidatorIdentity(hotkey)`: Get identity information for a validator
+- `getWeightCopiers(netuid, limit = 10)`: Get validators copying weights in a subnet
+- `getHotkeyFamilyLatest(hotkey)`: Get parent/child relationships for a hotkey
+- `getHotkeyFamilyHistory(hotkey, limit = 10)`: Get history of parent/child relationships
+- `getValidatorAlphaSharesLatest(hotkey)`: Get alpha shares for a validator
+- `getValidatorAlphaSharesHistory(hotkey, limit = 10)`: Get history of alpha shares
+
+### dTAO Endpoints
+
+- `getDTAOValidator(hotkey)`: Get dTAO validator details
+- `getDTAOValidatorHistory(hotkey, limit = 10)`: Get dTAO validator history
+- `getDTAOValidatorPerformanceLatest(hotkey)`: Get dTAO validator performance
+- `getDTAOValidatorPerformanceHistory(hotkey, limit = 10)`: Get dTAO validator performance history
+- `getDTAOStakeBalanceLatest(coldkey, hotkey)`: Get dTAO stake balance
+- `getDTAOStakeBalanceHistory(coldkey, hotkey, limit = 10)`: Get dTAO stake balance history
+- `getDTAOStakeBalanceAggregated(coldkey)`: Get aggregated dTAO stake balance
+- `getDTAODelegationEvents(limit = 10)`: Get dTAO delegation events
+- `getDTAOSlippage()`: Get dTAO slippage information
+- `getDTAOPoolLatest(netuid)`: Get latest dTAO subnet pool information
+- `getDTAOPoolHistory(netuid, limit = 10)`: Get dTAO subnet pool history
+- `getDTAOSubnetEmission(netuid)`: Get dTAO subnet emission
 
 ### Account Endpoints
 
@@ -103,6 +131,33 @@ The client provides access to the following categories of endpoints:
 - `getExtrinsics(module?, method?, limit = 10)`: Get extrinsic data
 - `getTransfers(address?, limit = 10)`: Get transfer data
 - `getExchanges()`: Get exchange data
+- `getChainCalls(limit = 10)`: Get chain calls
+- `getProxyCalls(limit = 10)`: Get proxy calls
+
+### Accounting Endpoints
+
+- `getAccounting(address, startBlock?, endBlock?, startTimestamp?, endTimestamp?)`: Get accounting information
+- `getColdkeyReport(coldkey, startTimestamp?, endTimestamp?)`: Get coldkey report
+- `getColdkeyReportCSV(coldkey, startTimestamp?, endTimestamp?)`: Get coldkey report as CSV
+
+### Delegation Endpoints
+
+- `getDelegationEvents(limit = 10)`: Get delegation events
+
+### Metagraph Endpoints
+
+- `getMetagraphLatest(netuid)`: Get latest metagraph data
+- `getMetagraphHistory(netuid, limit = 10)`: Get metagraph history
+- `getRootMetagraphLatest()`: Get latest root metagraph data
+- `getRootMetagraphHistory(limit = 10)`: Get root metagraph history
+
+### EVM Endpoints
+
+- `getEVMAddressFromSS58(address)`: Convert SS58 address to EVM address
+- `getEVMBlock(blockNumber?, hash?, limit = 10)`: Get EVM blocks
+- `getEVMTransaction(hash)`: Get EVM transaction
+- `getEVMContract(address)`: Get EVM contract
+- `getEVMLog(address?, topic0?, topic1?, topic2?, topic3?, limit = 10)`: Get EVM logs
 
 ## Debugging
 

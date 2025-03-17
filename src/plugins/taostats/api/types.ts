@@ -253,6 +253,190 @@ export interface BlockIntervalData {
   timestamp: number;
 }
 
+// New types for missing endpoints
+export interface SubnetDistributionData {
+  netuid: number;
+  distribution: Array<{
+    ip: string;
+    count: number;
+    percentage: number;
+  }>;
+}
+
+export interface HotkeyFamilyData {
+  hotkey: string;
+  parent: string;
+  children: string[];
+}
+
+export interface ColdkeyReportData {
+  coldkey: string;
+  stake: number;
+  validators: number;
+  activeValidators: number;
+  emission: number;
+  totalReward: number;
+  startTime: number;
+  endTime: number;
+}
+
+export interface StakeBalanceSumData {
+  coldkey: string;
+  stake: number;
+  timestamp: number;
+}
+
+export interface NeuronRegistrationData {
+  hotkey: string;
+  coldkey: string;
+  timestamp: number;
+  blockNumber: number;
+  subnet: number;
+}
+
+export interface NeuronDeregistrationData {
+  hotkey: string;
+  coldkey: string;
+  timestamp: number;
+  blockNumber: number;
+  subnet: number;
+}
+
+export interface MetagraphData {
+  netuid: number;
+  neurons: Array<{
+    uid: number;
+    hotkey: string;
+    coldkey: string;
+    stake: number;
+    rank: number;
+    emission: number;
+    trust: number;
+    consensus: number;
+    incentive: number;
+    dividends: number;
+    weights: Array<{
+      uid: number;
+      weight: number;
+    }>;
+  }>;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface EVMAddressData {
+  ss58: string;
+  hex: string;
+  evm: string;
+}
+
+export interface EVMBlockData {
+  blockNumber: number;
+  hash: string;
+  timestamp: number;
+  transactionCount: number;
+}
+
+export interface EVMTransactionData {
+  hash: string;
+  blockNumber: number;
+  from: string;
+  to: string;
+  value: string;
+  gasUsed: number;
+  timestamp: number;
+}
+
+export interface EVMContractData {
+  address: string;
+  creator: string;
+  creationTransaction: string;
+  creationBlock: number;
+  creationTimestamp: number;
+}
+
+export interface EVMLogData {
+  address: string;
+  topics: string[];
+  data: string;
+  blockNumber: number;
+  transactionHash: string;
+  timestamp: number;
+}
+
+export interface DelegationData {
+  delegator: string;
+  delegate: string;
+  amount: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface ProxyCallData {
+  real: string;
+  proxy: string;
+  callHash: string;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface WeightCopierData {
+  from: string;
+  to: string;
+  netuid: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface AlphaSharesData {
+  hotkey: string;
+  shares: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface SubnetEmissionData {
+  netuid: number;
+  emission: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface SubnetPoolData {
+  netuid: number;
+  emission: number;
+  stake: number;
+  timespan: number;
+  registrationCost: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface TradingViewHistoryData {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+export interface AccountingData {
+  address: string;
+  startBlock: number;
+  endBlock: number;
+  startTimestamp: number;
+  endTimestamp: number;
+  balanceStart: number;
+  balanceEnd: number;
+  transfersIn: number;
+  transfersOut: number;
+  rewards: number;
+  slashes: number;
+  staking: number;
+  unstaking: number;
+}
+
 // API response types
 export interface ApiResponse<T> {
   success: boolean;
