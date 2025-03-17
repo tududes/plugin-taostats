@@ -159,13 +159,29 @@ The client provides access to the following categories of endpoints:
 - `getEVMContract(address)`: Get EVM contract
 - `getEVMLog(address?, topic0?, topic1?, topic2?, topic3?, limit = 10)`: Get EVM logs
 
-## Debugging
+## Debugging and Testing
 
-You can use the included debugger script to test the API connectivity:
+To help verify that the API client is working properly, you can use the included debugging script that tests randomly selected endpoints from different categories:
 
 ```bash
+# Make sure your API key is in the .env file
+echo "TAOSTATS_API_KEY=your_api_key_here" > .env
+
+# Run the debugging script
 node --loader ts-node/esm src/plugins/taostats/debugTaostats.js
 ```
+
+The script will:
+1. Select one random endpoint from each of these categories: Classic, dTAO, EVM, Metagraph, and Accounting
+2. Execute each selected endpoint with sample parameters
+3. Display the results of each call, including success or error information
+4. Provide a summary of which calls succeeded and which failed
+
+This is helpful for:
+- Verifying your API key is working
+- Testing API connectivity 
+- Validating that new endpoints are functioning correctly
+- Checking if rate limiting is affecting your requests
 
 ## Rate Limiting
 
