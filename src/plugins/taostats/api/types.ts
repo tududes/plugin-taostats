@@ -109,6 +109,150 @@ export interface AccountData {
   }>;
 }
 
+// Extended types for new endpoints
+export interface StakeBalanceData {
+  coldkey: string;
+  hotkey: string;
+  stake: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface RuntimeVersionData {
+  specVersion: number;
+  transactionVersion: number;
+  implVersion: number;
+  authoringVersion: number;
+  specName: string;
+  implName: string;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface ValidatorWeightsData {
+  hotkey: string;
+  netuid: number;
+  weights: Array<{
+    uid: number;
+    weight: number;
+  }>;
+}
+
+export interface ValidatorMetricsData {
+  hotkey: string;
+  trust: number;
+  consensus: number;
+  incentive: number;
+  dividends: number;
+  emission: number;
+  rank: number;
+  netuid: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface ValidatorIdentityData {
+  hotkey: string;
+  display: string;
+  legal: string;
+  web: string;
+  riot: string;
+  email: string;
+  twitter: string;
+  image: string;
+}
+
+export interface ValidatorPerformanceData {
+  hotkey: string;
+  rankStats: {
+    avg: number;
+    min: number;
+    max: number;
+    change24h: number;
+  };
+  emissionStats: {
+    avg: number;
+    min: number;
+    max: number;
+    total: number;
+    change24h: number;
+  };
+}
+
+export interface SubnetOwnerData {
+  netuid: number;
+  owner: string;
+}
+
+export interface SubnetDescriptionData {
+  netuid: number;
+  description: string;
+}
+
+export interface SubnetRegistrationCostData {
+  netuid: number;
+  registrationCost: number;
+  timestamp: number;
+  blockNumber: number;
+}
+
+export interface ExchangeData {
+  name: string;
+  url: string;
+  pairs: Array<{
+    pair: string;
+    price: number;
+    volume24h: number;
+    lastUpdated: number;
+  }>;
+}
+
+export interface TransferData {
+  from: string;
+  to: string;
+  amount: number;
+  timestamp: number;
+  blockNumber: number;
+  hash: string;
+  success: boolean;
+}
+
+export interface EventData {
+  module: string;
+  method: string;
+  data: any;
+  timestamp: number;
+  blockNumber: number;
+  index: number;
+}
+
+export interface ExtrinsicData {
+  hash: string;
+  module: string;
+  method: string;
+  args: any;
+  timestamp: number;
+  blockNumber: number;
+  success: boolean;
+  index: number;
+}
+
+export interface StatusData {
+  status: string;
+  version: string;
+  uptime: number;
+  lastUpdate: number;
+}
+
+export interface BlockIntervalData {
+  intervalMs: number;
+  lastBlocks: Array<{
+    blockNumber: number;
+    timestamp: number;
+  }>;
+  timestamp: number;
+}
+
 // API response types
 export interface ApiResponse<T> {
   success: boolean;

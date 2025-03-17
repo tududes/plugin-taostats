@@ -1,94 +1,124 @@
-# Taostats Plugin for Eliza
+# Taostats API Plugin
 
-This plugin integrates with the [Taostats API](https://docs.taostats.io/) to provide information about the Bittensor network, including price data, subnets, validators, and more.
+This plugin provides a client for interacting with the [Taostats API](https://taostats.io/), which offers comprehensive data about the Bittensor network, including prices, validators, subnets, and more.
 
-## Features
+## Installation
 
-- Get current TAO price and price history
-- View available subnets (when API supports it)
-- Get detailed subnet information (when API supports it)
-- View validators in a subnet
-- Check validator details
-- Get account information
-
-## Setup
-
-1. Create a Taostats API key from [dash.taostats.io](https://dash.taostats.io/)
-2. Add your API key to your `.env` file:
-
-```
-TAOSTATS_API_KEY=your-api-key
+```bash
+npm install plugin-taostats
 ```
 
-## Current Limitations
+## Configuration
 
-The Taostats API appears to be changing or may have access restrictions that prevent certain endpoints from working consistently. The plugin is designed to gracefully handle these limitations by:
-
-1. Providing meaningful error messages when endpoints are unavailable
-2. Implementing timeouts to prevent hanging on API requests
-3. Offering fallback behavior for showing information to users
-
-Some specific endpoints (particularly subnet-related ones) may return 404 errors. This plugin is designed to handle these errors gracefully and provide helpful responses to users.
-
-## Debug Script
-
-Use the debug script to test the API connectivity:
+Set up your environment variables in a `.env` file:
 
 ```
-npm run debug:taostats
+TAOSTATS_API_KEY=your_api_key_here
 ```
 
-This script will:
-1. Test the API connectivity by fetching the current TAO price
-2. Try various subnet endpoints to find which ones work
-3. Provide detailed logs for debugging
+## Usage
 
-## Error Handling
+### Basic Usage
 
-The plugin implements robust error handling including:
+```javascript
+import { TaostatsApiClient } from 'plugin-taostats';
 
-- Connection timeouts to prevent hanging
-- Detailed logging of API requests and responses
-- User-friendly error messages
+// Create an API client
+const taostatsClient = new TaostatsApiClient({
+  apiKey: process.env.TAOSTATS_API_KEY,
+  // Optional configuration
+  // baseUrl: 'https://api.taostats.io/api',
+  // timeoutMs: 10000,
+  // rateLimitPerMinute: 60,
+});
 
-## Troubleshooting
-
-If you encounter issues with the plugin:
-
-1. Check your API key is correctly set in the `.env` file
-2. Run the debug script to see detailed API responses
-3. Check the Taostats API documentation for endpoint changes
-4. Verify your API key permissions in the Taostats dashboard
-
-## Prerequisites
-
-- Node.js 23+
-- pnpm
-
-## Project Structure
-
-```
-src/
-  ├── plugins/
-  │   └── taostats/            # Taostats plugin implementation
-  │       ├── actions/         # Plugin actions (price, network, validator, etc.)
-  │       ├── api/             # API client and type definitions
-  │       └── utils/           # Formatting and error handling utilities
-  ├── common/                  # Shared utilities and types
-  └── index.ts                 # Main entry point
-docs/
-  └── TAOSTATS_PLUGIN.md       # Detailed plugin documentation
-characters/
-  └── taostats.character.json  # Taostats character definition
+// Example: Get current price
+const priceData = await taostatsClient.getPrice();
+console.log(`Current TAO price: $${priceData.data.price}`);
 ```
 
-## Documentation
+### Response Format
 
-For more detailed information about the Taostats plugin, refer to the [documentation](docs/TAOSTATS_PLUGIN.md).
+All API responses follow a standard format:
 
-## Contributing
+```javascript
+{
+  success: boolean,
+  data?: T,
+  error?: string
+}
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## Available Endpoints
+
+The client provides access to the following categories of endpoints:
+
+### Price Endpoints
+
+- `getPrice(asset = 'tao')`: Get the current price
+- `getPriceHistory(interval = '1d', limit = 30)`: Get historical price data
+- `getPriceOHLC(interval = '1d', limit = 30)`: Get OHLC price data
+
+### Network/Block Endpoints
+
+- `getBlocks(limit = 10)`: Get recent blocks
+- `getNetworkStats()`: Get network statistics
+- `getStatus()`: Get API status
+- `getBlockInterval()`: Get block interval information
+- `getRuntimeVersionLatest()`: Get latest runtime version
+- `getRuntimeVersionHistory(limit = 10)`: Get runtime version history
+
+### Subnet Endpoints
+
+- `getSubnets()`: Get all subnets
+- `getSubnet(netuid)`: Get details for a specific subnet
+- `getSubnetHistory(netuid, limit = 10)`: Get history for a specific subnet
+- `getSubnetOwner(netuid)`: Get the owner of a subnet
+- `getSubnetDescription(netuid)`: Get the description of a subnet
+- `getSubnetRegistrationCostLatest()`: Get latest subnet registration cost
+- `getSubnetRegistrationCostHistory(limit = 10)`: Get history of subnet registration costs
+
+### Validator Endpoints
+
+- `getValidator(hotkey)`: Get details for a specific validator
+- `getValidatorHistory(hotkey, limit = 10)`: Get history for a specific validator
+- `getValidatorsInSubnet(netuid, limit = 10)`: Get validators in a specific subnet
+- `getValidatorWeightsLatest(hotkey)`: Get latest weights for a validator
+- `getValidatorWeightsHistory(hotkey, limit = 10)`: Get weight history for a validator
+- `getValidatorMetricsLatest(hotkey)`: Get latest metrics for a validator
+- `getValidatorMetricsHistory(hotkey, limit = 10)`: Get metric history for a validator
+- `getValidatorPerformance(hotkey)`: Get performance metrics for a validator
+- `getValidatorIdentity(hotkey)`: Get identity information for a validator
+
+### Account Endpoints
+
+- `getAccount(address)`: Get account details
+- `getAccountHistory(address, limit = 10)`: Get account history
+- `getStakeBalanceLatest(coldkey, hotkey)`: Get latest stake balance
+- `getStakeBalanceHistory(coldkey, hotkey, limit = 10, block_start?, block_end?, timestamp_start?, timestamp_end?)`: Get stake balance history
+
+### Event and Extrinsic Endpoints
+
+- `getEvents(module?, method?, limit = 10)`: Get event data
+- `getExtrinsics(module?, method?, limit = 10)`: Get extrinsic data
+- `getTransfers(address?, limit = 10)`: Get transfer data
+- `getExchanges()`: Get exchange data
+
+## Debugging
+
+You can use the included debugger script to test the API connectivity:
+
+```bash
+node --loader ts-node/esm src/plugins/taostats/debugTaostats.js
+```
+
+## Rate Limiting
+
+The Taostats API has rate limits in place. The client implements a basic rate limiter to help manage requests. If you encounter rate limiting errors, consider:
+
+1. Reducing the frequency of your requests
+2. Using a higher `rateLimitPerMinute` value in your configuration if your API key allows it
+3. Implementing retry logic with exponential backoff
 
 ## License
 
